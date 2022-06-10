@@ -1,7 +1,1 @@
-[{
-    "accountNumber": "191176a5-94f5-4f73-bb4a-37da675fb98d",
-    "identification": "120",
-    "full_name": "yaider corsdob",
-    "balance": 0,
-    "cvv": "123"
-}]
+[{"accountNumber":"c783f6f0-4fb4-4f1e-8458-4dd5ea5141aa","identification":"123","full_name":"jhon","balance":0,"cvv":"456"},{"accountNumber":"f0aacddf-57d4-4f75-aef8-4dbfae552fe9","identification":"4478","full_name":"andres","balance":0,"cvv":"789"}]

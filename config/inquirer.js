@@ -1,8 +1,11 @@
 // modules
 const inquirer=require("inquirer");
-const { choices } = require("yargs");
+const infoAccount=require("./infoAccount.js");
 require("colors");
 
+/**
+ * Initial menu
+ */
 const options=[
     {
         type:"list",
@@ -31,7 +34,11 @@ const options=[
             },
             {
                 value:6,
-                name:`${'6.'.green} Ver Informacion De La Cuenta.`
+                name:`${'6.'.green} Ver Cuentas.`
+            },
+            {
+                value:7,
+                name:`${'7.'.green} Ver Informacion De La Cuenta.`
             },
             {
                 value:0,
@@ -39,8 +46,13 @@ const options=[
             }
         ]
     }
-]
+];
 
+
+/**
+ * show menu option
+ * @returns option
+ */
 const menuOptions=async()=>{
     console.clear();
     console.log("========================".green);
@@ -50,48 +62,19 @@ const menuOptions=async()=>{
     return option;
 }
 
+/**
+ * function to create account
+ * @param {*} index asnwer position
+ * @returns resp
+ */
 const createAccount=async(index)=>{
-    const options=[
-        {
-            type:"input",
-            name:"resp",
-            nameInfo:"id",
-            message:"Ingrese su identificacion",
-            validate(value){
-                if(value.length===0){
-                    return 'Por favor ingrese un valor';
-                }
-                return true;
-            }
-        },
-        {
-            type:"input",
-            name:"resp",
-            nameInfo:"name",
-            message:"Ingrese su nombre completo",
-            validate(value){
-                if(value.length===0){
-                    return 'Por favor ingrese un valor';
-                }
-                return true;
-            }
-        },
-        {
-            type:"input",
-            name:"resp",
-            nameInfo:"cvv",
-            message:"Ingrese su cvv",
-            validate(value){
-                if(value.length===0){
-                    return 'Por favor ingrese un valor';
-                }
-                return true;
-            }
-        },
-    ];
-    const {resp} = await inquirer.prompt(options[index]);
-    return {respuesta: resp,OptionsArr:options};
+    const {resp} = await inquirer.prompt(infoAccount[index]);
+    return resp;
 }
+
+/**
+ * pause function
+ */
 const pause=async()=>{
     
     const options=[
