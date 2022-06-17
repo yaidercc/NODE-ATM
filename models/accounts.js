@@ -65,6 +65,20 @@ class accounts {
         const balance = this.getAccount("accountNumber", account).balance;
         this.getAccount("accountNumber", account).balance = Number(amount) + Number(balance);
     }
+
+    /**
+     * deposit money to account
+     */
+    TrasnactMoney({
+        accountFrom,
+        accountTo,
+        amount
+    }) {
+        const balancAccountFrom = this.getAccount("accountNumber", accountFrom).balance;
+        const balancAccountTo = this.getAccount("accountNumber", accountTo).balance;
+        this.getAccount("accountNumber", accountTo).balance = Number(amount) + Number(balancAccountTo);
+        this.getAccount("accountNumber", accountFrom).balance = Number(balancAccountFrom) - Number(amount);
+    }
 }
 
 module.exports = accounts;

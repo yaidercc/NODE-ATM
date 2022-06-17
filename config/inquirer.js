@@ -3,7 +3,8 @@ const inquirer = require("inquirer");
 
 const {
     registerUser,
-    consignInfo
+    consignInfo,
+    transactionInfo
 } = require("./infoAccount.js");
 require("colors");
 
@@ -92,7 +93,7 @@ const pause = async () => {
 }
 
 /**
- * function to add money to an account
+ * function to deposit money to an account
  * @param {*} index asnwer position
  * @returns resp
  */
@@ -103,6 +104,24 @@ const depositMoney = async (index) => {
     return resp;
 }
 
+
+/**
+ * function to send money to another account 
+ * @param {*} index asnwer position
+ * @returns resp
+ */
+const sendMoney = async (index) => {
+    const {
+        resp
+    } = await inquirer.prompt(transactionInfo[index]);
+    return resp;
+}
+
+
+/**
+ * 
+ * @param {*} moveInfo 
+ */
 const invoice=(moveInfo)=>{
     console.clear();
     console.log("========================".green);
@@ -128,5 +147,6 @@ module.exports = {
     pause,
     createAccount,
     depositMoney,
-    invoice
+    invoice,
+    sendMoney
 }
