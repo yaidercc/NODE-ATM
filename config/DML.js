@@ -1,5 +1,7 @@
 const fs = require("fs");
+const { array } = require("yargs");
 const path="./accounts/accounts.json";
+
 /**
  * save info account in the accounts file
  * @param {*} data acctount data
