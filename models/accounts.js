@@ -67,7 +67,7 @@ class accounts {
     }
 
     /**
-     * deposit money to account
+     * send money to another account
      */
     TrasnactMoney({
         accountFrom,
@@ -78,6 +78,17 @@ class accounts {
         const balancAccountTo = this.getAccount("accountNumber", accountTo).balance;
         this.getAccount("accountNumber", accountTo).balance = Number(amount) + Number(balancAccountTo);
         this.getAccount("accountNumber", accountFrom).balance = Number(balancAccountFrom) - Number(amount);
+    }
+
+    /**
+     * withdraw money from an account
+     */
+    withdrawMoney({
+        account,
+        amount
+    }) {
+        const balance = this.getAccount("accountNumber", account).balance;
+        this.getAccount("accountNumber", account).balance = Number(balance) - Number(amount);
     }
 }
 

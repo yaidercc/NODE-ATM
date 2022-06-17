@@ -5,7 +5,8 @@ const {
     createAccount,
     depositMoney,
     invoice,
-    sendMoney
+    sendMoney,
+    withdrawMoney
 } = require("./config/inquirer");
 const {
     saveAccount,
@@ -15,7 +16,8 @@ const accounts = require("./models/accounts");
 const {
     registerUser,
     consignInfo,
-    transactionInfo
+    transactionInfo,
+    withdrawInfo
 } = require("./config/infoAccount");
 
 const main = async () => {
@@ -27,9 +29,11 @@ const main = async () => {
     }
 
     let opt = '',
-        i, inputInfo = {};
+        i, inputInfo = {},
+        accountInfo = {};;
     do {
         i = 0;
+        accountInfo = {}
         opt = await menuOptions();
         switch (opt) {
             case 1:
@@ -67,7 +71,7 @@ const main = async () => {
                     date: new Date().toLocaleDateString(),
                     typeMove: "transaction"
                 };
-                let accountFromInfo = {};
+
                 do {
                     const respTransaction = await sendMoney(i);
                     inputInfo[transactionInfo[i].nameInfo] = respTransaction;
@@ -75,7 +79,7 @@ const main = async () => {
                     switch (transactionInfo[i].nameInfo) {
 
                         case "accountFrom":
-                            accountFromInfo = account.getAccount("accountNumber", inputInfo.accountFrom);
+                            accountInfo = account.getAccount("accountNumber", inputInfo.accountFrom);
                             if (account.getAccount("accountNumber", respTransaction)) {
                                 i++;
                             } else {
@@ -98,17 +102,17 @@ const main = async () => {
                             break;
                         case "amount":
                             if (respTransaction >= 0) {
-                                if (accountFromInfo.balance >= respTransaction) {
+                                if (accountInfo.balance >= respTransaction) {
                                     i++;
                                 } else {
                                     console.log("Saldo insuficiente.".red);
-                                    console.log(`${"Tu saldo es de:".green} $ ${accountFromInfo.balance}`);
+                                    console.log(`${"Tu saldo es de:".green} $ ${accountInfo.balance}`);
                                 }
                             } else console.log("Monto Invalido".red);
                             break;
                         case "cvv":
 
-                            if (accountFromInfo.cvv != respTransaction) {
+                            if (accountInfo.cvv != respTransaction) {
                                 console.log("cvv invalido");
                             } else {
                                 i++;
@@ -118,6 +122,46 @@ const main = async () => {
                 } while (i < transactionInfo.length);
                 account.TrasnactMoney(inputInfo);
                 invoice(inputInfo);
+                break;
+            case 5:
+                /* ** withdraw money ** */
+                inputInfo = {
+                    date: new Date().toLocaleDateString(),
+                    typeMove: "withdraw"
+                };
+                do {
+                    const respWithdraw = await withdrawMoney(i);
+                    inputInfo[withdrawInfo[i].nameInfo] = respWithdraw;
+                    switch (withdrawInfo[i].nameInfo) {
+                        case "account":
+                            if (account.getAccount("accountNumber", respWithdraw)) {
+                                accountInfo = account.getAccount("accountNumber", inputInfo.account);
+                                i++
+                            } else console.log("Numero de cuenta no encontrado".red);
+
+                            break;
+                        case "amount":
+                            if (respWithdraw >= 0) {
+                                if (accountInfo.balance >= respWithdraw) {
+                                    i++;
+                                } else {
+                                    console.log("Saldo insuficiente.".red);
+                                    console.log(`${"Tu saldo es de:".green} $ ${accountInfo.balance}`);
+                                }
+                            } else console.log("Monto Invalido".red);
+                            break;
+                        case "cvv":
+
+                            if (accountInfo.cvv != respWithdraw) {
+                                console.log("cvv invalido");
+                            } else {
+                                i++;
+                            }
+                            break;
+                    }
+                } while (i < withdrawInfo.length);
+                account.withdrawMoney(inputInfo);
+                invoice(inputInfo)
                 break;
             case 6:
                 /* ** Deposit Money ** */

@@ -4,7 +4,8 @@ const inquirer = require("inquirer");
 const {
     registerUser,
     consignInfo,
-    transactionInfo
+    transactionInfo,
+    withdrawInfo
 } = require("./infoAccount.js");
 require("colors");
 
@@ -17,15 +18,15 @@ const options = [{
     message: "¿Que desea hacer?",
     choices: [{
             value: 1,
-            name: `${'1.'.green} Registrar Usuario.`
+            name: `${'1.'.green} Registrar Cuenta.`
         },
         {
             value: 2,
-            name: `${'2.'.green} Modificar Usuario.`
+            name: `${'2.'.green} Modificar Cuenta.`
         },
         {
             value: 3,
-            name: `${'3.'.green} Eliminar Usuario.`
+            name: `${'3.'.green} Eliminar Cuenta.`
         },
         {
             value: 4,
@@ -117,12 +118,23 @@ const sendMoney = async (index) => {
     return resp;
 }
 
+/**
+ * function to deposit money to an account
+ * @param {*} index asnwer position
+ * @returns resp
+ */
+ const withdrawMoney = async (index) => {
+    const {
+        resp
+    } = await inquirer.prompt(withdrawInfo[index]);
+    return resp;
+}
 
 /**
  * 
  * @param {*} moveInfo 
  */
-const invoice=(moveInfo)=>{
+const invoice = (moveInfo) => {
     console.clear();
     console.log("========================".green);
     console.log("Factura");
@@ -138,7 +150,10 @@ const invoice=(moveInfo)=>{
                 `${"Cuenta Origen: ".green} ${moveInfo.accountFrom}.\n${"Cuenta Destino: ".green} ${moveInfo.accountTo}.\n${"Monto: ".green} ${moveInfo.amount}.\n${"Fecha de transaccion:".green} ${moveInfo.date}`
             )
             break;
-        default:
+        case "withdraw":
+            console.log(
+                `${"Cuenta Origen: ".green} ${moveInfo.account}.\n${"Monto retirado: ".green} ${moveInfo.amount}.\n${"Fecha de transaccion:".green} ${moveInfo.date}`
+            )
             break;
     }
 }
@@ -148,5 +163,6 @@ module.exports = {
     createAccount,
     depositMoney,
     invoice,
-    sendMoney
+    sendMoney,
+    withdrawMoney
 }
