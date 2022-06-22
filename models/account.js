@@ -6,7 +6,8 @@ class Account{
         this.identification=identification;
         this.full_name=full_name;
         this.balance=0;
-        this.cvv=cvv
+        this.cvv=cvv;
+        this.status=1;
     }
 }
 

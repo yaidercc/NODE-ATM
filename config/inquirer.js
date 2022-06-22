@@ -26,7 +26,7 @@ const options = [{
         },
         {
             value: 3,
-            name: `${'3.'.green} Eliminar Cuenta.`
+            name: `${'3.'.green} Suspender Cuenta.`
         },
         {
             value: 4,
@@ -123,7 +123,7 @@ const sendMoney = async (index) => {
  * @param {*} index asnwer position
  * @returns resp
  */
- const withdrawMoney = async (index) => {
+const withdrawMoney = async (index) => {
     const {
         resp
     } = await inquirer.prompt(withdrawInfo[index]);
@@ -131,7 +131,7 @@ const sendMoney = async (index) => {
 }
 
 /**
- * 
+ * invoice of the moves
  * @param {*} moveInfo 
  */
 const invoice = (moveInfo) => {
@@ -157,6 +157,32 @@ const invoice = (moveInfo) => {
             break;
     }
 }
+
+/**
+ * Suspend Account method
+ * @param {*} index asnwer position
+ * @returns resp
+ */
+const suspendAccount = async () => {
+    const question = [{
+        type: 'input',
+        name: 'desc',
+        message:"Account Number",
+        validate(value) {
+            if (value.length < 16) {
+                return 'Por favor ingrese un numero de cuenta valido.';
+            }
+            return true;
+        }
+    }];
+
+    const {
+        desc
+    } = await inquirer.prompt(question);
+
+    return desc;
+}
+
 module.exports = {
     menuOptions,
     pause,
@@ -164,5 +190,6 @@ module.exports = {
     depositMoney,
     invoice,
     sendMoney,
-    withdrawMoney
+    withdrawMoney,
+    suspendAccount
 }

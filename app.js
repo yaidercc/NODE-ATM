@@ -6,7 +6,8 @@ const {
     depositMoney,
     invoice,
     sendMoney,
-    withdrawMoney
+    withdrawMoney,
+    suspendAccount
 } = require("./config/inquirer");
 const {
     saveAccount,
@@ -18,6 +19,7 @@ const {
     consignInfo,
     transactionInfo,
     withdrawInfo
+    
 } = require("./config/infoAccount");
 
 const main = async () => {
@@ -61,6 +63,20 @@ const main = async () => {
                     console.log("Guarde el siguiente numero de cuenta: " + account.getAccount(id).accountNumber.toString().green);
                 } else {
                     console.error("Ya hay una cuenta con este id".red);
+                }
+                break;
+            case 3:
+                const respDelete = await suspendAccount();
+                const accountDel=account.getAccount("accountNumber",respDelete);
+                if (accountDel) {
+                    if(accountDel.status!=0){
+                        account.DeleteAccount(respDelete);
+                        console.log("Cuenta suspendida existosamente.".green);
+                    }else{
+                        console.log("Esta cuenta ya se encuentra suspendida.".yellow);
+                    }
+                } else {
+                    console.log("Numero de cuenta no encontrado.".red);
                 }
                 break;
             case 4:

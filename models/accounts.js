@@ -90,6 +90,12 @@ class accounts {
         const balance = this.getAccount("accountNumber", account).balance;
         this.getAccount("accountNumber", account).balance = Number(balance) - Number(amount);
     }
+
+    DeleteAccount(
+        account
+    ) {
+        this.getAccount("accountNumber", account).status = 0;
+    }
 }
 
 module.exports = accounts;
