@@ -7,7 +7,7 @@ const {
     invoice,
     sendMoney,
     withdrawMoney,
-    suspendAccount
+    InfoAccount
 } = require("./config/inquirer");
 const {
     saveAccount,
@@ -18,8 +18,9 @@ const {
     registerUser,
     consignInfo,
     transactionInfo,
-    withdrawInfo
-    
+    withdrawInfo,
+    showInfoAccount
+
 } = require("./config/infoAccount");
 
 const main = async () => {
@@ -39,25 +40,25 @@ const main = async () => {
         opt = await menuOptions();
         switch (opt) {
             case 1:
-                /* ** Register user ** */
+                /* ** Registrar usuario ** */
 
-                // Get data
+                // Obtener datos
                 do {
                     const respuesta = await createAccount(i);
                     inputInfo[registerUser[i].nameInfo] = respuesta;
                     i++;
                 } while (i < registerUser.length);
 
-                // save data
+                // Guardar datos
                 const {
                     id, name, cvv
                 } = inputInfo;
 
-                // validations before save ccount
+                // validaciones antes de guardar una cuenta
                 if (!account.getAccount(id)) {
-                    // save account
+                    // guardar cuenta
                     account.createAccount(inputInfo);
-                    // show account number
+                    // mostrar el numero de cuenta
                     console.clear();
                     console.log("Cuenta guardada con exito. ".green);
                     console.log("Guarde el siguiente numero de cuenta: " + account.getAccount(id).accountNumber.toString().green);
@@ -65,22 +66,8 @@ const main = async () => {
                     console.error("Ya hay una cuenta con este id".red);
                 }
                 break;
-            case 3:
-                const respDelete = await suspendAccount();
-                const accountDel=account.getAccount("accountNumber",respDelete);
-                if (accountDel) {
-                    if(accountDel.status!=0){
-                        account.DeleteAccount(respDelete);
-                        console.log("Cuenta suspendida existosamente.".green);
-                    }else{
-                        console.log("Esta cuenta ya se encuentra suspendida.".yellow);
-                    }
-                } else {
-                    console.log("Numero de cuenta no encontrado.".red);
-                }
-                break;
-            case 4:
-                /* ** Send Money ** */
+            case 2:
+                /* ** Enviar dinero ** */
 
 
                 inputInfo = {
@@ -91,7 +78,7 @@ const main = async () => {
                 do {
                     const respTransaction = await sendMoney(i);
                     inputInfo[transactionInfo[i].nameInfo] = respTransaction;
-                    // validate if account number exists and if amount>0
+                    // validar si las cuentas existen y que el monto sea valido
                     switch (transactionInfo[i].nameInfo) {
 
                         case "accountFrom":
@@ -104,7 +91,7 @@ const main = async () => {
                             break;
                         case "accountTo":
 
-                            // validate if the destination account is different from the source account
+                            // valida si la cuenta de destino es diferente a la de origen
                             if (inputInfo.accountFrom != inputInfo.accountTo) {
                                 if (account.getAccount("accountNumber", respTransaction)) {
                                     i++;
@@ -138,9 +125,10 @@ const main = async () => {
                 } while (i < transactionInfo.length);
                 account.TrasnactMoney(inputInfo);
                 invoice(inputInfo);
+                account.addHistory(inputInfo)
                 break;
-            case 5:
-                /* ** withdraw money ** */
+            case 3:
+                /* ** Retirar Dinero ** */
                 inputInfo = {
                     date: new Date().toLocaleDateString(),
                     typeMove: "withdraw"
@@ -177,10 +165,11 @@ const main = async () => {
                     }
                 } while (i < withdrawInfo.length);
                 account.withdrawMoney(inputInfo);
-                invoice(inputInfo)
+                invoice(inputInfo);
+                account.addHistory(inputInfo);
                 break;
-            case 6:
-                /* ** Deposit Money ** */
+            case 4:
+                /* ** Depositar dinero ** */
 
                 inputInfo = {
                     date: new Date().toLocaleDateString(),
@@ -189,7 +178,7 @@ const main = async () => {
                 do {
                     const respDeposit = await depositMoney(i);
                     inputInfo[consignInfo[i].nameInfo] = respDeposit;
-                    // validate if account number exists and if amount>0
+                    // validar si las cuentas existen y que el monto sea valido
                     switch (consignInfo[i].nameInfo) {
                         case "account":
                             if (account.getAccount("accountNumber", respDeposit)) i++
@@ -203,6 +192,44 @@ const main = async () => {
                 } while (i < consignInfo.length);
                 account.depositMoney(inputInfo);
                 invoice(inputInfo);
+                account.addHistory(inputInfo);
+                break;
+            case 5:
+                 /* ** Mostrar informacion de la cuenta ** */
+                inputInfo = {};
+                do {
+                    const respInfoAccount = await InfoAccount(i);
+                    inputInfo[showInfoAccount[i].nameInfo] = respInfoAccount;
+                    switch (showInfoAccount[i].nameInfo) {
+                        case "account":
+                            if (account.getAccount("accountNumber", respInfoAccount)) {
+                                accountInfo = account.getAccount("accountNumber", inputInfo.account);
+                                i++
+                            } else console.log("Numero de cuenta no encontrado".red);
+                            break;
+                        case "cvv":
+
+                            if (accountInfo.cvv != respInfoAccount) {
+                                console.log("cvv invalido");
+                            } else {
+                                i++;
+                            }
+                            break;
+                    }
+                } while (i < showInfoAccount.length);
+                const infoAccount = account.getAccount("accountNumber", inputInfo.account);
+                console.clear();
+                console.log("Identificacion Titular: " + infoAccount.identification);
+                console.log("Nombre Titular: " + infoAccount.full_name);
+                console.log("Balance: $ " + infoAccount.balance);
+
+                console.log("\nMovimientos: ".bgGreen);
+                infoAccount.transaction_history?.forEach((item) => {
+                    console.log("\n=================");
+                    console.log(`Fecha: ${item.date}`);
+                    console.log(`Monto: ${item.substraction? item.amount.toString().red:item.amount.toString().green}`);
+                    console.log(item.from ? `Origen: ${item.from}` : `Destino: ${item.to}`);
+                });
                 break;
         }
         saveAccount(account.listadoArr);

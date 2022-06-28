@@ -18,7 +18,7 @@ class accounts {
     }
 
     /**
-     * function to create account
+     * funcion para crear cuenta
      * @param {*} id 
      * @param {*} full_name 
      * @param {*} cvv 
@@ -33,7 +33,7 @@ class accounts {
     }
 
     /**
-     * returns an user account specified
+     * devuelve una cuenta de usuario especificado
      * @param {*} id 
      * @returns user account
      */
@@ -45,7 +45,7 @@ class accounts {
     }
 
     /**
-     * fill accounts object with accounts from accounts file
+     * Metodo para llenar objeto de cuentas con cuentas del archivo de cuentas
      * @param {*} accounts 
      */
     fillAccountsObj(accounts = []) {
@@ -56,7 +56,7 @@ class accounts {
     }
 
     /**
-     * deposit money to account
+     * Metodo para depositar dinero en una cuenta
      */
     depositMoney({
         account,
@@ -67,7 +67,7 @@ class accounts {
     }
 
     /**
-     * send money to another account
+     * Metodo para enviar dinero a otra cuenta
      */
     TrasnactMoney({
         accountFrom,
@@ -81,7 +81,7 @@ class accounts {
     }
 
     /**
-     * withdraw money from an account
+     * Metodo para retirar dinero de una cuenta
      */
     withdrawMoney({
         account,
@@ -91,11 +91,54 @@ class accounts {
         this.getAccount("accountNumber", account).balance = Number(balance) - Number(amount);
     }
 
-    DeleteAccount(
-        account
-    ) {
-        this.getAccount("accountNumber", account).status = 0;
+    /**
+     * Metodo que guarda el historial de transacciones de las cuentas.
+     * @param {}} moveInfo 
+     */
+    addHistory(moveInfo) {
+        // valida el tipo de movimiento
+        switch (moveInfo.typeMove) {
+            case "deposit":
+                this.getAccount("accountNumber", moveInfo.account).transaction_history.push({
+                    date: moveInfo.date,
+                    amount: `+ $${moveInfo.amount}`,
+                    from: "Cajero",
+                    to: null,
+                    substraction: false
+                });
+                break;
+            case "transaction":
+                // cuenta origen
+                this.getAccount("accountNumber", moveInfo.accountFrom).transaction_history.push({
+                    date: moveInfo.date,
+                    amount: `- $${moveInfo.amount}`,
+                    from: null,
+                    to: moveInfo.accountTo,
+                    substraction: true
+                });
+                // cuenta destino
+                this.getAccount("accountNumber", moveInfo.accountTo).transaction_history.push({
+                    date: moveInfo.date,
+                    amount: `+ $${moveInfo.amount}`,
+                    from: moveInfo.accountTo,
+                    to: null,
+                    substraction: false
+                });
+                break;
+            case "withdraw":
+                this.getAccount("accountNumber", moveInfo.account).transaction_history.push({
+                    date: moveInfo.date,
+                    amount: `- $${moveInfo.amount}`,
+                    from: "Cajero",
+                    to: null,
+                    substraction: true
+                });
+                break;
+
+        }
     }
+
+    
 }
 
 module.exports = accounts;

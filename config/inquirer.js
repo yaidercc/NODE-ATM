@@ -5,12 +5,13 @@ const {
     registerUser,
     consignInfo,
     transactionInfo,
-    withdrawInfo
+    withdrawInfo,
+    showInfoAccount
 } = require("./infoAccount.js");
 require("colors");
 
 /**
- * Initial menu
+ * menu inicial
  */
 const options = [{
     type: "list",
@@ -22,27 +23,19 @@ const options = [{
         },
         {
             value: 2,
-            name: `${'2.'.green} Modificar Cuenta.`
+            name: `${'2.'.green} Enviar Dinero.`
         },
         {
             value: 3,
-            name: `${'3.'.green} Suspender Cuenta.`
+            name: `${'3.'.green} Retirar Dinero.`
         },
         {
             value: 4,
-            name: `${'4.'.green} Enviar Dinero.`
+            name: `${'4.'.green} Consignar Dinero.`
         },
         {
             value: 5,
-            name: `${'5.'.green} Retirar Dinero.`
-        },
-        {
-            value: 6,
-            name: `${'6.'.green} Consignar Dinero.`
-        },
-        {
-            value: 7,
-            name: `${'7.'.green} Ver Informacion De La Cuenta.`
+            name: `${'5.'.green} Ver Informacion De La Cuenta.`
         },
         {
             value: 0,
@@ -53,7 +46,7 @@ const options = [{
 
 
 /**
- * show menu option
+ * mostrar menu de opciones
  * @returns option
  */
 const menuOptions = async () => {
@@ -68,7 +61,7 @@ const menuOptions = async () => {
 }
 
 /**
- * function to create account
+ * funcion para crear cuenta
  * @param {*} index asnwer position
  * @returns resp
  */
@@ -94,8 +87,8 @@ const pause = async () => {
 }
 
 /**
- * function to deposit money to an account
- * @param {*} index asnwer position
+ * funcion para depositar dinero en una cuenta
+ * @param {*} index posicion de la pregunta
  * @returns resp
  */
 const depositMoney = async (index) => {
@@ -107,8 +100,8 @@ const depositMoney = async (index) => {
 
 
 /**
- * function to send money to another account 
- * @param {*} index asnwer position
+ * funcion para enviar dinero a otra cuenta
+ * @param {*} index posicion de la pregunta
  * @returns resp
  */
 const sendMoney = async (index) => {
@@ -119,8 +112,8 @@ const sendMoney = async (index) => {
 }
 
 /**
- * function to deposit money to an account
- * @param {*} index asnwer position
+ * funcion para retirar dinero en una cuenta
+ * @param {*} index posicion de la pregunta
  * @returns resp
  */
 const withdrawMoney = async (index) => {
@@ -131,7 +124,7 @@ const withdrawMoney = async (index) => {
 }
 
 /**
- * invoice of the moves
+ * factura del movimiento realizado
  * @param {*} moveInfo 
  */
 const invoice = (moveInfo) => {
@@ -159,28 +152,15 @@ const invoice = (moveInfo) => {
 }
 
 /**
- * Suspend Account method
- * @param {*} index asnwer position
+ * Mostrar informacion de la cuenta
+ * @param {*} index posicion de la pregunta
  * @returns resp
  */
-const suspendAccount = async () => {
-    const question = [{
-        type: 'input',
-        name: 'desc',
-        message:"Account Number",
-        validate(value) {
-            if (value.length < 16) {
-                return 'Por favor ingrese un numero de cuenta valido.';
-            }
-            return true;
-        }
-    }];
-
+const InfoAccount = async (index) => {
     const {
-        desc
-    } = await inquirer.prompt(question);
-
-    return desc;
+        resp
+    } = await inquirer.prompt(showInfoAccount[index]);
+    return resp;
 }
 
 module.exports = {
@@ -191,5 +171,5 @@ module.exports = {
     invoice,
     sendMoney,
     withdrawMoney,
-    suspendAccount
+    InfoAccount
 }

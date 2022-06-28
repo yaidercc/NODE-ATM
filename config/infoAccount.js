@@ -151,9 +151,36 @@ const withdrawInfo = [{
     },
 ];
 
+const showInfoAccount = [{
+        type: "input",
+        name: "resp",
+        nameInfo: "account",
+        message: "Cuenta: ",
+        validate(value) {
+            if (value.length < 16) {
+                return 'Por favor ingrese un numero de cuenta valido.';
+            }
+            return true;
+        }
+    },
+    {
+        type: "input",
+        name: "resp",
+        nameInfo: "cvv",
+        message: "cvv: ",
+        validate(value) {
+            if (value.length < 3) {
+                return 'cvv invalido.';
+            }
+            return true;
+        }
+    },
+]
+
 module.exports = {
     registerUser,
     consignInfo,
     transactionInfo,
-    withdrawInfo
+    withdrawInfo,
+    showInfoAccount
 };

@@ -7,7 +7,7 @@ class Account{
         this.full_name=full_name;
         this.balance=0;
         this.cvv=cvv;
-        this.status=1;
+        this.transaction_history=[];
     }
 }
 
