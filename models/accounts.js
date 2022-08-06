@@ -37,7 +37,7 @@ class accounts {
      * @param {*} id 
      * @returns user account
      */
-    getAccount(typeSearch = "id", infoSearch) {
+    getAccount( infoSearch,typeSearch = "id") {
         if (typeSearch == "id") {
             return this.listadoArr.filter(list => list.identification == infoSearch)[0];
         }
